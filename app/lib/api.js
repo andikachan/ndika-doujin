@@ -1,4 +1,4 @@
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.ndikacunk.my.id";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || '';
 
 /**
  * Core request helper. Attaches Authorization header when a token is passed.
