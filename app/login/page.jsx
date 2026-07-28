@@ -1,13 +1,14 @@
-"use client";
+'use client';
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "../hooks/useAuth";
 import { toast } from "../store/toastStore";
 import SakuraLogo from "../components/SakuraLogo";
 
-export default function LoginPage() {
+// Komponen terpisah untuk bagian yang menggunakan useSearchParams
+function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { login } = useAuth();
@@ -81,5 +82,23 @@ export default function LoginPage() {
         </p>
       </form>
     </div>
+  );
+}
+
+// Loading fallback
+function LoginFallback() {
+  return (
+    <div className="flex min-h-[70vh] items-center justify-center">
+      <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+    </div>
+  );
+}
+
+// Export utama dengan Suspense
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<LoginFallback />}>
+      <LoginForm />
+    </Suspense>
   );
 }

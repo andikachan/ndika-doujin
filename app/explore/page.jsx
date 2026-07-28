@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import api from "../lib/api";
 import { useGenres } from "../hooks/useManga";
@@ -18,7 +18,8 @@ const SORT_OPTIONS = [
 ];
 const PAGE_SIZE = 18;
 
-export default function ExplorePage() {
+// Komponen terpisah untuk bagian yang menggunakan useSearchParams
+function ExploreContent() {
   const searchParams = useSearchParams();
   const { genres } = useGenres();
 
@@ -167,5 +168,29 @@ export default function ExplorePage() {
         )}
       </div>
     </div>
+  );
+}
+
+// Loading fallback
+function ExploreFallback() {
+  return (
+    <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+      <h1 className="text-2xl font-bold text-ink-light dark:text-ink-dark">Explore</h1>
+      <p className="mt-1 text-sm text-ink-light/50 dark:text-ink-dark/40">Loading...</p>
+      <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+        {[...Array(12)].map((_, i) => (
+          <div key={i} className="aspect-[2/3] animate-pulse rounded-lg bg-gray-200 dark:bg-gray-700"></div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// Export utama dengan Suspense
+export default function ExplorePage() {
+  return (
+    <Suspense fallback={<ExploreFallback />}>
+      <ExploreContent />
+    </Suspense>
   );
 }
