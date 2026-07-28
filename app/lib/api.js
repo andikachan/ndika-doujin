@@ -1,4 +1,4 @@
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || '';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.ndikacunk.my.id";
 
 /**
  * Core request helper. Attaches Authorization header when a token is passed.
@@ -40,41 +40,41 @@ function qs(params = {}) {
 
 export const api = {
   // ---- Manga ----
-  getMangaList: (params = {}) => request(`/v1/doujin/manga${qs(params)}`),
-  getMangaDetail: (slug) => request(`/v1/doujin/manga/${slug}`),
-  getGenres: () => request(`/v1/doujin/genres`),
+  getMangaList: (params = {}) => request(`/api/v1/doujin/manga${qs(params)}`),
+  getMangaDetail: (slug) => request(`/api/v1/doujin/manga/${slug}`),
+  getGenres: () => request(`/api/v1/doujin/genres`),
 
   // ---- Chapter ----
-  getChapter: (id) => request(`/v1/doujin/chapter/${id}`),
+  getChapter: (id) => request(`/api/v1/doujin/chapter/${id}`),
   recordChapterView: (id, token) =>
-    request(`/v1/doujin/chapter/${id}/view`, { method: "POST", token }),
+    request(`/api/v1/doujin/chapter/${id}/view`, { method: "POST", token }),
 
   // ---- Comments ----
   getMangaComments: (id, params = {}) =>
-    request(`/v1/doujin/manga/comments${qs({ id, sortBy: "Latest", page: 1, limit: 15, ...params })}`),
+    request(`/api/v1/doujin/manga/comments${qs({ id, sortBy: "Latest", page: 1, limit: 15, ...params })}`),
   getChapterComments: (id, params = {}) =>
-    request(`/v1/doujin/chapter/comments${qs({ id, sortBy: "Latest", page: 1, limit: 15, ...params })}`),
+    request(`/api/v1/doujin/chapter/comments${qs({ id, sortBy: "Latest", page: 1, limit: 15, ...params })}`),
   postMangaComment: (token, { content, imageUrl, parentId }) =>
-    request(`/v1/doujin/manga/comments`, { method: "POST", token, body: { content, imageUrl, parentId } }),
+    request(`/api/v1/doujin/manga/comments`, { method: "POST", token, body: { content, imageUrl, parentId } }),
   postChapterComment: (token, { content, imageUrl, parentId }) =>
-    request(`/v1/doujin/chapter/comments`, { method: "POST", token, body: { content, imageUrl, parentId } }),
-  likeComment: (id, token) => request(`/v1/doujin/comment/${id}/like`, { method: "POST", token }),
+    request(`/api/v1/doujin/chapter/comments`, { method: "POST", token, body: { content, imageUrl, parentId } }),
+  likeComment: (id, token) => request(`/api/v1/doujin/comment/${id}/like`, { method: "POST", token }),
 
   // ---- Auth ----
   register: ({ username, email, password, full_name }) =>
-    request(`/v1/doujin/auth/register`, { method: "POST", body: { username, email, password, full_name } }),
+    request(`/api/v1/doujin/auth/register`, { method: "POST", body: { username, email, password, full_name } }),
   login: ({ email, password }) =>
-    request(`/v1/doujin/auth/login`, { method: "POST", body: { email, password } }),
-  getMe: (token) => request(`/v1/doujin/auth/me`, { token }),
+    request(`/api/v1/doujin/auth/login`, { method: "POST", body: { email, password } }),
+  getMe: (token) => request(`/api/v1/doujin/auth/me`, { token }),
 
   // ---- User ----
-  getHistory: (token) => request(`/v1/doujin/user/history`, { token }),
-  getBookmarks: (token) => request(`/v1/doujin/user/bookmarks`, { token }),
+  getHistory: (token) => request(`/api/v1/doujin/user/history`, { token }),
+  getBookmarks: (token) => request(`/api/v1/doujin/user/bookmarks`, { token }),
   addBookmark: (token, manga_id) =>
-    request(`/v1/doujin/user/bookmarks`, { method: "POST", token, body: { manga_id } }),
+    request(`/api/v1/doujin/user/bookmarks`, { method: "POST", token, body: { manga_id } }),
 
   // ---- Image proxy ----
-  proxyImageUrl: (url) => `${BASE_URL}/v1/doujin/proxy-image${qs({ url })}`,
+  proxyImageUrl: (url) => `${BASE_URL}/api/v1/doujin/proxy-image${qs({ url })}`,
 };
 
 export default api;
