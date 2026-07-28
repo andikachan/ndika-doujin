@@ -16,8 +16,29 @@ export function useMangaList(params) {
     setError(null);
     try {
       const res = await api.getMangaList(params);
-      setData(res?.data || res?.results || []);
-      setMeta(res?.meta || res?.pagination || null);
+      
+      // 🔥 PERBAIKAN: Handle berbagai kemungkinan response
+      let mangaData = [];
+      let metaData = null;
+      
+      if (Array.isArray(res)) {
+        // Response langsung array
+        mangaData = res;
+      } else if (res?.data && Array.isArray(res.data)) {
+        // Response { data: [...] }
+        mangaData = res.data;
+        metaData = res.meta || res.pagination || null;
+      } else if (res?.results && Array.isArray(res.results)) {
+        // Response { results: [...] }
+        mangaData = res.results;
+        metaData = res.meta || res.pagination || null;
+      } else {
+        // Fallback: coba apapun yang bisa diiterasi
+        mangaData = Array.isArray(res) ? res : [];
+      }
+      
+      setData(mangaData);
+      setMeta(metaData);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -45,7 +66,14 @@ export function useMangaDetail(slug) {
     api
       .getMangaDetail(slug)
       .then((res) => {
-        if (active) setData(res?.data || res);
+        if (active) {
+          // Handle response yang mungkin array atau object
+          if (Array.isArray(res)) {
+            setData(res[0] || null);
+          } else {
+            setData(res?.data || res || null);
+          }
+        }
       })
       .catch((err) => {
         if (active) setError(err.message);
@@ -68,7 +96,18 @@ export function useGenres() {
   useEffect(() => {
     api
       .getGenres()
-      .then((res) => setGenres(res?.data || res?.genres || []))
+      .then((res) => {
+        // Handle berbagai kemungkinan response
+        if (Array.isArray(res)) {
+          setGenres(res);
+        } else if (res?.data && Array.isArray(res.data)) {
+          setGenres(res.data);
+        } else if (res?.genres && Array.isArray(res.genres)) {
+          setGenres(res.genres);
+        } else {
+          setGenres([]);
+        }
+      })
       .catch(() => setGenres([]))
       .finally(() => setLoading(false));
   }, []);
